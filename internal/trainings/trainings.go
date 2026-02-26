@@ -11,7 +11,6 @@ import (
 )
 
 type Training struct {
-	// TODO: добавить поля
 	Steps        int
 	TrainingType string
 	Duration     time.Duration
@@ -19,7 +18,6 @@ type Training struct {
 }
 
 func (t *Training) Parse(datastring string) (err error) {
-	// TODO: реализовать функцию
 	splittedData := strings.Split(datastring, ",")
 	if len(splittedData) != 3 {
 		return errors.New("не хватает элементов в слайсе")
@@ -27,7 +25,7 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	steps, err := strconv.Atoi(splittedData[0])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid steps format: %w", err)
 	}
 	if steps <= 0 {
 		return errors.New("не удалось получить количество шагов")
@@ -39,7 +37,7 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	duration, err := time.ParseDuration(splittedData[2])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid duration format: %w", err)
 	}
 	if duration <= 0 {
 		return errors.New("не удалось получить время тренировки")
@@ -50,7 +48,6 @@ func (t *Training) Parse(datastring string) (err error) {
 }
 
 func (t Training) ActionInfo() (string, error) {
-	// TODO: реализовать функцию
 	distance := spentenergy.Distance(t.Steps, t.Personal.Height)
 
 	meanSpeed := spentenergy.MeanSpeed(t.Steps, t.Personal.Height, t.Duration)
@@ -59,7 +56,7 @@ func (t Training) ActionInfo() (string, error) {
 	case "Бег":
 		calories, err := spentenergy.RunningSpentCalories(t.Steps, t.Personal.Weight, t.Personal.Height, t.Duration)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("invalid calories format: %w", err)
 		}
 
 		resultRun := fmt.Sprintf(`Тип тренировки: %s
@@ -74,7 +71,7 @@ func (t Training) ActionInfo() (string, error) {
 
 		calories, err := spentenergy.WalkingSpentCalories(t.Steps, t.Personal.Weight, t.Personal.Height, t.Duration)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("invalid calories format: %w", err)
 		}
 
 		resultWalk := fmt.Sprintf(`Тип тренировки: %s

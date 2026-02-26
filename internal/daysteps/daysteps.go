@@ -11,14 +11,12 @@ import (
 )
 
 type DaySteps struct {
-	// TODO: добавить поля
 	Steps    int
 	Duration time.Duration
 	personaldata.Personal
 }
 
 func (ds *DaySteps) Parse(datastring string) (err error) {
-	// TODO: реализовать функцию
 	splittedData := strings.Split(datastring, ",")
 	if len(splittedData) != 2 {
 		return errors.New("не хватает элементов в слайсе")
@@ -26,7 +24,7 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	steps, err := strconv.Atoi(splittedData[0])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid steps format: %w", err)
 	}
 	if steps <= 0 {
 		return errors.New("не удалось получить количество шагов")
@@ -35,7 +33,7 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	duration, err := time.ParseDuration(splittedData[1])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid duration format: %w", err)
 	}
 	if duration <= 0 {
 		return errors.New("не удалось получить время тренировки")
@@ -52,7 +50,7 @@ func (ds DaySteps) ActionInfo() (string, error) {
 
 	calories, err := spentenergy.WalkingSpentCalories(ds.Steps, ds.Weight, ds.Personal.Height, ds.Duration)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("invalid calories format: %w", err)
 	}
 
 	result := fmt.Sprintf(`Количество шагов: %d.
